@@ -1,0 +1,25 @@
+<link rel="stylesheet" href="/stylesheets/partials/flash.css">
+
+<% if (success.length > 0 || error.length > 0) { %>
+  <div class="custom-flash" id="flash">
+    <div class="custom-flash-container">
+      <p class="custom-flash-success"><%- success %></p>
+      <p class="custom-flash-error"><%- error %></p>
+    </div>
+    <img src="/assets/close.svg" alt="Cerrar alerta" id="flash_close">
+  </div>
+<% } %>
+
+<script>
+  document.addEventListener('DOMContentLoaded', function() {
+    const flashCloseButton = document.querySelector('#flash_close');
+    const flash = document.querySelector('#flash');
+
+    if (flashCloseButton && flash) {
+      flashCloseButton.addEventListener('click', function() {
+        flash.style.display = 'none'; // Hide the flash message when the close button is clicked
+      });
+    }
+  });
+</script>
+

@@ -1,0 +1,86 @@
+<% layout('layouts/boilerplate') %>
+<%- include('../navbar/navbar') %>
+
+<link rel="stylesheet" href="/stylesheets/loginRegister.css">
+<div class="input-container">
+  <div class="input-form">
+    <h1>Crea tu cuenta SoundPro</h1>
+    <form action="/register" method="POST" novalidate>
+      <div class="input-spacing">
+        <input type="text" name="username" placeholder="Nombre de usuario">
+        <div class="unvalid-feedback">Usuario inválido</div>
+      </div>
+      <div class="input-spacing">
+        <input type="email" name="email" placeholder="Correo electrónico">
+        <div class="unvalid-feedback">Email inválido</div>
+      </div>
+      <div class="input-spacing">
+        <input type="text" name="business" placeholder="Nombre de empresa">
+      </div>
+      <div class="input-spacing">
+        <input type="tel" name="phone" placeholder="Número de teléfono">
+        <div class="unvalid-feedback">Numero de teléfono inválido</div>
+      </div>
+
+      <div class="input-spacing special-placeholder-container">
+        <input type="date" name="birth" id="date_input">
+        <span id="date_placeholder" class="date-placeholder">Fecha de nacimiento</span>
+        <div class="unvalid-feedback">Fecha de nacimiento inválida</div>
+      </div>
+
+      <div class="input-spacing">
+        <input type="text" name="dni" placeholder="DNI">
+        <div class="unvalid-feedback">DNI inválido</div>
+      </div>
+      <div class="input-spacing">
+        <input type="text" name="" placeholder="Contraseña">
+        <div class="unvalid-feedback">Contraseña inválida</div>
+      </div>
+      
+      <div class="input-spacing special-placeholder-container">
+        <input type="password" name="password" id="password_input">
+        <span id="password_placeholder" class="password-placeholder">Repita la contraseña</span>
+        <div class="unvalid-feedback">Las contraseñas no coinciden</div>
+      </div>
+      <button class="submit-button" type="submit">
+        Crear cuenta
+      </button>
+    </form>
+    <span class="account-status">Ya tienes una cuenta? <a href="/login">Iniciar sesión</a></span>
+  </div>
+</div>
+
+<script>  
+  const datePlaceholder = document.getElementById('date_placeholder');
+  const dateInput = document.getElementById('date_input');
+  const passwordPlaceholder = document.getElementById('password_placeholder');
+  const passwordInput = document.getElementById('password_input');
+  
+  dateInput.style.color = 'transparent';
+  
+  dateInput.addEventListener('focus', () => {
+    if (dateInput.value === '') {
+      dateInput.style.color = 'black'; // Set input text color to black
+      datePlaceholder.style.display = 'none'; // Hide the placeholder text
+    }
+  });
+
+  dateInput.addEventListener('blur', () => {
+    if (dateInput.value === '') {
+      dateInput.style.color = 'transparent'; // Reset input text color
+      datePlaceholder.style.display = ''; // Show the placeholder text
+    }
+  })
+
+  passwordInput.addEventListener('focus', () => {
+    if (passwordInput.value === '') {
+      passwordPlaceholder.style.display = 'none'; // Hide the placeholder text
+    }
+  });
+
+  passwordInput.addEventListener('blur', () => {
+    if (passwordInput.value === '') {
+      passwordPlaceholder.style.display = ''; // Show the placeholder text
+    }
+  })
+</script>

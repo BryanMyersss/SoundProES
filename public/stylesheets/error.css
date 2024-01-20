@@ -1,0 +1,8 @@
+.error {
+  font-family: var(--font-inter);
+  max-width: 700px;
+  margin: 0 auto;
+  margin-top: 6em;
+  font-size: 20px;
+  line-height: 130%;
+}

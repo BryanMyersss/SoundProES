@@ -1,0 +1,47 @@
+<% layout('layouts/boilerplate') %>
+<%- include('../navbar/navbar') %>
+
+<link rel="stylesheet" href="/stylesheets/account/account.css">
+<main class="main-container section_padding">
+    <aside class="sidebar">
+      <h1>Mi Cuenta</h1>
+      <h2 class="not-available">General</h2>
+      <h2>Pedidos</h2>
+      <h2 class="not-available">Pago</h2>
+      <h2 class="not-available">Dirección de envío</h2>
+      <h2 class="not-available">Atención al cliente</h2>
+    </aside>
+  
+    <section class="selected-setting-container" id="appendContainer">
+      
+    </section>
+</main>
+
+
+
+
+<script>
+
+  // requests dinamically the html and then appends it for a seamless experience
+  function fetchAndAppendHtml() {
+  fetch('/account/orders')
+    .then((response) => {
+      if (!response.ok) {
+        throw new Error('Network response was not ok');
+      }
+      return response.text(); // Receive response as text (HTML)
+    })
+    .then((html) => {
+      // console.log(html)
+      const container = document.querySelector('#appendContainer');
+      container.innerHTML += html;
+    })
+    .catch((error) => {
+      console.error('Error fetching orders:', error);
+      // Handle errors here
+    });
+  }
+  
+  fetchAndAppendHtml();
+
+</script>

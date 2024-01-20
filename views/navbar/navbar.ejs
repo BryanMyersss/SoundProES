@@ -1,0 +1,42 @@
+<link rel="stylesheet" href="/stylesheets/navbar.css">
+
+<nav class="navbar section_padding">
+  <div class="navbar-container">
+    <a href="/shop" class="navbar-logo">
+      <img src="/assets/logo.png" alt="SoundPro - Logo">
+    </a>
+    <div class="navbar-links">
+      <a href="" class="navbar-link not-available">inicio</a>
+      <a href="/shop" class="navbar-link">alquila tu equipo</a>
+      <a href="" class="navbar-link not-available">contacto</a>
+      
+      <div class="navbar-link navbar-account-container">
+        <a href="/account" id="account_link"><img src="/assets/user.svg" alt="Cuenta de usuario"></a>
+        <p class="navbar-account-username">
+          <% try { %>
+            <%= currentUser.username %>
+          <% } catch (error) { %>
+
+          <% } %>
+        </p>
+        <ul class="navbar-account-menu">
+          <% if(!currentUser) { %>
+          <li><a href="/login">Iniciar sesión</a></li>
+          <li><a href="/register">Registro</a></li>
+          <% } else { %>
+          <% if (currentUser.id === process.env.ADMIN) { %>
+            <li><a href="/admin/stock">Panel admin</a></li>
+          <% } %>
+          <li><a href="/account">Cuenta</a></li>
+          <li><a href="/logout">Cerrar sesión</a></li>
+          <% } %>
+        </ul>
+      </div>
+
+      <a href="/cart" class="navbar-link"><img src="/assets/cart.svg" alt="Carrito"></a>
+    </div>
+  </div>
+  <%- include('../partials/flash') %>
+</nav>
+
+<script src="/js/navbar/userDropdown.js"></script>

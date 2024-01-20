@@ -1,0 +1,140 @@
+.input-container {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+
+  height: calc(100vmin - var(--navbar-height));
+}
+
+form {
+  text-align: center;
+}
+
+.input-form {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  
+  width: 484px;
+  font-family: var(--font-inter);
+  border: 1px solid #ECE9E9;
+  background: #FFF;
+  box-shadow: var(--background-shadow);
+  padding: 1em 0;
+}
+
+.input-form h1 {
+  color: #232323;
+  text-align: center;
+  font-size: 32px;
+  font-weight: 700;
+  margin: 0.7em 0 0.5em 0;
+}
+
+.input-spacing {
+  display: flex;
+  justify-content: center;
+  margin-bottom: 10px;
+}
+
+.input-form input {
+  line-height: normal;
+  width: 390px;
+  height: 50px;
+  border-radius: 5px;
+  border: 1px solid #DFDFDF;
+  background: #FFF;
+  box-shadow: var(--background-shadow);
+  font-family: var(--font-inter);
+  font-size: 20px;
+  /* -webkit-box-sizing: border-box;
+  padding-left: 20px; */
+  text-indent: 20px;
+  outline: none;
+}
+
+.input-form input[type="date"] {
+  padding-block: 1px;
+  padding-inline: 2px;
+  text-indent: 10px;
+  box-sizing: border-box;
+  position: relative;
+  width: 100%;
+}
+
+.input-form input[type="date"]::-webkit-calendar-picker-indicator {
+  background: transparent;
+    bottom: 0;
+    color: transparent;
+    cursor: pointer;
+    height: auto;
+    left: 0;
+    position: absolute;
+    right: 0;
+    top: 0;
+    width: auto;
+}
+
+.special-placeholder-container {
+  position: relative;
+}
+
+.date-placeholder {
+  position: absolute;
+  pointer-events: none;
+  color: #757575;
+  font-size: 20px;
+  font-weight: 400;
+  top: 12px;
+  left: 24px;
+}
+
+.password-placeholder {
+  position: absolute;
+  pointer-events: none;
+  color: #757575;
+  font-size: 20px;
+  font-weight: 400;
+  top: 14px;
+  left: 24px;
+}
+
+.unvalid-feedback {
+  display: none;
+}
+
+.submit-button {
+  width: 395px;
+  height: 50px;
+
+  margin-top: 27px;
+  
+  border: none;
+  border-radius: 55px;
+  background: #313131;
+  box-shadow: var(--background-shadow);
+
+  color: #FBFBFB;
+  text-align: center;
+  font-family: var(--font-inter);
+  font-size: 24px;
+  font-weight: 500;
+  cursor: pointer;
+}
+
+.account-status {
+  margin-top: 16px;
+  display: block;
+  color: #000;
+  text-align: center;
+  font-size: 16px;
+  font-weight: 400;
+  margin-bottom: 30px;
+}
+
+.account-status a {
+  color: #007EF2;
+  text-decoration-line: underline;
+
+  margin-top: 14px;
+}

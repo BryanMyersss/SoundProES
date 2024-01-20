@@ -1,0 +1,218 @@
+<% layout('layouts/boilerplate') %>
+<%- include('./navbar/adminNav') %>
+
+
+
+<div class="delete-container-sticky">
+  <div class="delete-container">
+    <div class="delete-overlay">
+      <p class="delete-overlay-header">Cuidado! Estás a punto de eliminar:</p>
+      <div class="delete-overlay-product">
+        <img class="delete-overlay-product-image" src="" alt="">
+        <p class="delete-overlay-product-name">
+          <b>The box pro</b><br>
+          <span>Achat Amprack MK II</span>
+        </p>
+      </div>
+      <div class="delete-overlay-buttons">
+        <button id="overlay_cancel">Cancelar</button>
+        <button id="overlay_delete">Eliminar</button>
+      </div>
+    </div>
+  </div>
+</div>
+
+<div class="blur-container "> 
+  
+  <link rel="stylesheet" href="/stylesheets/admin/adminSecNav.css">
+  <nav class="secondary_navbar admin section_padding">
+    <div class="secondary_navbar-container">
+      <p class="navbar-action-button" id="action_delete">Eliminar producto</p>
+      <p class="navbar-action-button" id="action_edit">Editar producto</p>
+      <p><a href="/admin/product/add">Añadir producto</a></p>    
+    </div>
+  </nav>
+  
+  
+  <link rel="stylesheet" href="/stylesheets/admin/stock.css">
+  <main class="main-container">
+    <div class="main-container-background"></div>
+    <% for (let product of products) { %>
+      <div class="product" id="<%=product._id%>">
+        <p class="product-name"><b class="product-manufacturer"> <%= product.manufacturer[0] %> </b> <%= product.name %> </p>
+        <div class="product-subcontainer">
+          <img class="product-image" src="/file/<%= product.images[0].filename %>" alt="">
+          <div class="product-stats">
+            <p class="product-price"><%= product.priceDay %>€ día</p>
+            <div class="product-inhouse product-stat">
+              <img src="/assets/admin/inHouse.svg" alt="">
+              <p>2<span>/5</span></p>
+            </div>
+            <div class="product-rented product-stat">
+              <img src="/assets/admin/client.svg" alt="">
+              <p>3</p>
+            </div>
+            <div class="product-delayed product-stat">
+              <img src="/assets/admin/clockDelayed.svg" alt="">
+              <p>0</p>
+            </div>
+          </div>
+        </div>
+      </div>
+    <% } %>
+  </main>
+  
+</div>
+
+
+<script>
+  // Script for the overlay functionality and delete request
+  let overlayActive = false;
+  let product;
+  const overlay = document.querySelector('.delete-container-sticky');
+  const overlayProductImage = document.querySelector('.delete-overlay-product-image')
+  const overlayProductManufacturer = document.querySelector('.delete-overlay-product-name b')
+  const overlayProductName = document.querySelector('.delete-overlay-product-name span')
+  const blurContainer = document.querySelector('.blur-container');
+
+  const openOverlay = (clickedProduct) => {
+    product = clickedProduct;
+    const productImage = product.querySelector('.product-image').getAttribute('src');
+    // This two declarations below are beyond sub optimal, however, i'm learning new methods, so it's staying here.
+    const productManufacturer = product.querySelector('.product-manufacturer').textContent.trim();
+    const productName = product.querySelector('.product-name').textContent.trim().replace(productManufacturer, '').trim();
+
+    overlayProductImage.src = productImage;
+    overlayProductManufacturer.textContent = productManufacturer;
+    overlayProductName.textContent = productName;
+    overlay.style.visibility = 'visible';
+    overlay.style.opacity = '1';
+    blurContainer.classList.add('active');
+
+    console.log(product.id)
+    overlayActive = true;
+  }
+
+  let deleteFetchRequestActive = false;
+  async function deleteProduct(productId) {
+    try {
+      if(deleteFetchRequestActive) {
+        throw new Error('A fetch request is already active!');
+      }
+      deleteFetchRequestActive = true;
+      const response = await fetch(`/admin/product/${productId}?_method=DELETE`, {
+        method: 'POST'
+      });
+      if (!response.ok) {
+        throw new Error('Network response was not ok.');
+      }
+      // const data = await response.json();
+      // console.log(data);
+      deleteFetchRequestActive = false;
+      return 'Data fetched successfully!';
+    } catch (error) {
+      deleteFetchRequestActive = false;
+      throw new Error('Error occurred while fetching data.');
+    }
+  };
+
+  const overlayButtons = document.querySelectorAll('.delete-overlay-buttons button');
+    overlayButtons.forEach((button) => {
+      button.addEventListener('click', async (event) => {
+        console.log('an overlay button has been pressed')
+        if (overlayActive){
+          const action = button.getAttribute('id');
+          console.log(action);
+          switch (action) {
+            case 'overlay_cancel':
+              overlay.style.visibility = 'hidden';
+              overlay.style.opacity = '0';
+              blurContainer.classList.remove('active');
+              overlayActive = false;
+              break;
+            case 'overlay_delete':
+              if(!product.id){
+                console.log('nothing defined')
+                break;
+              }
+              deleteProduct(product.id)
+                .then(message => {
+                  console.log(message);
+                  overlay.style.visibility = 'hidden';
+                  overlay.style.opacity = '0';
+                  blurContainer.classList.remove('active');
+                  overlayActive = false;
+                  customFlash('Producto desactivado correctamente', 'success');
+                  setTimeout(() => {
+                    location.reload(); // Reload the page
+                  }, 1500); 
+                })
+                .catch(errorMessage => {
+                  customFlash('error: ' + errorMessage, 'error');
+                  console.error(errorMessage)
+                });
+              break;
+            default:
+              break;
+          }
+        }
+      })
+    })
+
+    function myFunction() {
+
+    }
+</script>
+
+<script>
+  // this function controls the navbar buttons, its redirects, and styles as well for the products.
+  let selectedBtnId;
+  // adds event listeners to the navbar button and controls its styles and products styles, also sets variables for functions below
+  const actionButtons = document.querySelectorAll('.navbar-action-button');
+  actionButtons.forEach((actionButton) => {
+    actionButton.addEventListener('click', (event) => {
+      const mainContainer = document.querySelector('.main-container');
+      mainContainer.classList.add('selectable')
+      if (selectedBtnId) {
+        const oldActionButton = document.getElementById(selectedBtnId);
+        oldActionButton.classList.remove('selected');
+      }
+      selectedBtnId = actionButton.getAttribute('id');
+      actionButton.classList.add('selected');
+    })
+  })
+
+  // controls routers and styles
+  document.addEventListener('click', function (event) {
+    // get the product that has been clicked (if there is any)
+    const ClickedProductDiv = event.target.closest('.product');
+    
+    // if the button hasn't clicked itself and there is a button selected and its not a product...
+    if (event.target.id !== selectedBtnId && selectedBtnId && !ClickedProductDiv) {
+      if(!event.target.classList.contains('navbar-action-button')) {
+      }
+      const button = document.getElementById(selectedBtnId);
+      button.classList.remove('selected');
+      selectedBtnId = undefined;
+    }
+
+    // if the thing that has been clicked is a product...
+    if(ClickedProductDiv) {
+      switch (selectedBtnId) {
+        case "action_edit":
+          window.location.href = `/admin/product/edit/${ClickedProductDiv.id}`;
+          break;
+        case "action_delete":
+          openOverlay(ClickedProductDiv);
+          break;
+        default:
+          break;
+      }
+      const actionButton = document.getElementById(selectedBtnId);
+      actionButton.classList.remove('selected');
+      const mainContainer = document.querySelector('.main-container');
+      mainContainer.classList.remove('selectable');
+    } 
+
+  });
+</script>

@@ -1,0 +1,33 @@
+:root {
+  --secondaryNavbar-height: 44px;
+}
+
+.secondary_navbar {
+  display: flex;
+  align-items: center;
+  background-color: #EF476F;
+  height: var(--secondaryNavbar-height);
+  justify-content: center;
+}
+
+.secondary_navbar.admin {
+  background-color: var(--secondary-font-color);
+}
+
+.secondary_navbar-container {
+  display: flex;
+  flex-direction: row;
+  justify-content: space-between;
+  width: 1270px;
+}
+.secondary_navbar-container a,
+.secondary_navbar-container p {
+  font-family: var(--font-outfit);
+  color: #FFF;
+  font-size: 20px;
+  font-style: normal;
+  font-weight: 300;
+  line-height: normal;
+  text-decoration: none;
+  cursor: pointer;
+} 

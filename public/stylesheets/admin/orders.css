@@ -1,0 +1,128 @@
+.main-container {
+  width: 100%;
+  display: flex;
+  justify-content: center;
+}
+
+.orders-container {
+  display: flex;
+  flex: 1;
+  flex-wrap: wrap;
+  justify-content: center;
+  /* justify-content: space-between; */
+  
+  max-width: 1600px;
+  margin-left: 10px;
+  margin-right: 30px;
+
+  font-family: var(--font-inter);
+}
+
+.order {
+  display: flex;
+  flex-direction: column;
+  flex: 1 1 380px;
+  
+  background: #fff;
+  max-width: 380px;
+  height: 454px;
+
+  margin-top: 20px;
+  padding: 0 20px;
+  padding-top: 10px;
+  box-shadow: 0px 0px 4px 0px rgba(0, 0, 0, 0.25);
+  margin-left: 20px;
+}
+
+.order-info {
+  padding: 0 1px;
+  margin-top: 5px;
+
+  font-size: 16px;
+  font-style: normal;
+  font-weight: 400;
+  line-height: normal;
+}
+
+.order-info:nth-child(odd) {
+  background: #F2F1F1;
+}
+
+
+.order-info span {
+  color: var(--brand-color);
+}
+
+.order-info.column {
+  display: flex;
+  justify-content: space-between;
+  padding-right: 20px;
+}
+.order-info.column span {
+  display: block;
+}
+
+.order-products-container {
+  margin-top: auto;
+  height: 168px;
+}
+
+.order-product {
+  position: relative;
+  display: inline-block;
+  height: 80px;
+  aspect-ratio: 1;
+  margin-left: 2px;
+}
+.order-product:nth-child(4n+1) {
+  margin-left: 0;
+}
+
+.order-product-image {
+  height: 80px;
+  aspect-ratio: 1;
+}
+
+.order-product-qty {
+  position: absolute;
+  top: 0;
+  left: 0;
+
+  display: flex;
+  justify-content: center;
+  filter: drop-shadow(0px 0px 4px rgba(0, 0, 0, 0.25));
+  border-radius: 50%;
+
+  width: 29px;
+  aspect-ratio: 1;
+
+  font-size: 24px;
+  color: #000;
+  font-weight: 600;
+  background: #fff;
+}
+
+.order-extra-products {
+  color: #000;
+  text-align: center;
+  font-size: 13px;
+  height: 16px;
+}
+
+.order-buttons-container {
+  display: flex;
+  margin-top: 8px;
+  margin-bottom: 16px;
+}
+
+.order-product-button {
+  margin: 0 auto;
+  color: #FFF;
+  text-align: center;
+  font-size: 16px;
+  font-weight: 400;
+  padding: 9px 16px;
+  background: var(--secondary-font-color);
+  border-radius: 5px;
+  text-decoration: none;
+}

@@ -1,0 +1,72 @@
+/* this should only be aplied to the admin secondary navbar, not the client navbar */
+
+:root {
+  --secondaryNavbar-height: 44px;
+}
+
+.secondary_navbar {
+  display: flex;
+  align-items: center;
+  background-color: var(--secondary-font-color);
+  height: var(--secondaryNavbar-height);
+  z-index: 2;
+  justify-content: center;
+  position: sticky;
+  top: var(--navbar-height);
+}
+
+.secondary_navbar-container {
+  display: flex;
+  flex-direction: row;
+  justify-content: space-between;
+  width: 1270px;
+  --secondary-navbar-padding: 24px;
+  padding: 0 var(--secondary-navbar-padding);
+}
+
+.secondary_navbar-container a,
+.secondary_navbar-container p {
+  font-family: var(--font-outfit);
+  color: #FFF;
+  font-size: 20px;
+  font-style: normal;
+  font-weight: 400;
+  line-height: normal;
+  text-decoration: none;
+  cursor: pointer;
+  z-index: 1;
+  position: relative;
+  transition: all 0.2s;
+} 
+
+.secondary_navbar-container a::before,
+.secondary_navbar-container p::before {
+  background: var(--secondary-font-color);
+  content: '';
+  position: absolute;
+  height: var(--secondaryNavbar-height);
+  width: calc(100% + (var(--secondary-navbar-padding) * 2));
+  top: 50%;
+  left: 50%;
+  transform: translate(-50%, -50%);
+  z-index: -1;
+  transition: all 0.2s;
+}
+
+.secondary_navbar-container a:hover::before ,
+.secondary_navbar-container p:hover::before {
+  background: #F1F1F1;
+}
+
+.secondary_navbar-container a:hover,
+.secondary_navbar-container p:hover {
+  color: var(--secondary-font-color);
+}
+
+.secondary_navbar-container .selected::before {
+  background: #F1F1F1;
+}
+
+.secondary_navbar-container .selected {
+  color: var(--secondary-font-color);
+}

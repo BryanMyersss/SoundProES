@@ -1,0 +1,656 @@
+<% layout('layouts/boilerplate') %>
+<%- include('../navbar/navbar') %>
+
+<link rel="stylesheet" href="/stylesheets/shop/cart.css">
+<main class="main-container">
+
+  <section class="cart-main-container">
+    <div class="cart-loading-overlay">
+      <div class="overlay-loader"></div>
+    </div>
+    <div class="cart-heading">
+      <h1 class="cart-head-text">Cesta <span id="items_selected_qty">(7)</span></h1>
+      <p>Deseleccionar todos los articulos</p>
+    </div>
+    <div class="cart-item-list">
+      
+      <% for( let val of cart) { const {product, qty} = val;  %>
+        <div class="cart-item" id="<%= product.id %>">
+          <input type="checkbox">
+          <img class="cart-item-image" src="/file/<%= product.images[0].filename %>" alt="">
+          <div class="cart-item-info-container">
+            <div class="cart-item-middle-container">
+              <h3 class="cart-item-name"><b><%= product.manufacturer[0] %></b> <%= product.name %></h3>
+              <p class="cart-item-price-day"><span id="product_price"><%= product.priceDay %></span>€ día</p>
+              <ul class="cart-item-bullet-points">
+                <% for( let bulletPoint of product.bulletPoints) { %>
+                  <li><%= bulletPoint %></li>
+                <% } %>
+              </ul>
+            </div>
+            <div class="cart-item-end-container">
+              <div class="cart-item-price">
+                <h3><span id="product_price_alldays">148</span>€ <p id="product_rent_days">1 día</p></h3>
+                <img src="/assets/bin.svg"  id="delete" alt="Delete product">
+              </div>
+              <div class="cart-item-quantity-selector">
+                <button id="remove"><img src="/assets/mathSubtract.svg" alt="Remove one product"></button>
+                <span id="product_qty"><%= qty %></span>
+                <button id="add"><img src="/assets/mathAdd.svg" alt="Add one product"></button>
+              </div>
+              <p class="cart-item-stock">en stock: <%= product.stock.totalOwned %></p>
+            </div>
+          </div>
+        </div>
+  
+        <hr class="cart-item-list-line">
+      <% } %>
+    </div>
+  </section>
+  
+  <section class="summary-main-container">
+    <div class="summary-overlay-container">
+
+      <div class="summary-overlay"></div>
+      <h2 class="summary-header">Resumen</h2>
+      <div class="summary-date-container">
+        <div class="summary-date">
+          <label class="summary-label">Fecha recogida</label>
+          <div class="pickup-date">
+            <input type="date" id="pickup_date" aria-label="Fecha recogida">
+            <span>Ver disponibilidad</span>
+          </div>
+          <div class="pickup-time">
+            <input type="time" aria-label="Hora recogida" step="3600" id="pickup_time">
+            <img src="/assets/clock.svg" alt="">
+          </div>
+        </div>
+        <div class="summary-date">
+          <label class="summary-label">Fecha entrega</label>
+          <div class="return-date">
+            <input type="date" id="return_date" aria-label="Fecha devolución">
+            <span>Ver disponibilidad</span>
+          </div>
+          <div class="return-time">
+            <input type="time" aria-label="Hora devolución" step="3600" id="return_time">
+            <img src="/assets/clock.svg" alt="">
+          </div>
+        </div>
+      </div>
+  
+      <hr class="summary-line">
+  
+      <label class="summary-label">Servicios adicionales</label>
+      <div class="summary-services-container">
+        <div class="summary-location-picker not-available">
+          <span>Punto de entrega/instalación</span>
+          <img src="/assets/mathAdd.svg" alt="">
+        </div>
+        <div class="summary-service-option first not-available">
+          <input type="checkbox" name="" id="delivery">
+          <label class="shrink-text-block" for="delivery">Entrega del equipo</label>
+          <img src="/assets/helper.svg" alt="">
+        </div>
+        <div class="summary-service-option not-available">
+          <input type="checkbox" name="" id="delivery_pickup">
+          <label class="shrink-text-block" for="delivery_pickup">Recogida del equipo</label>
+          <img src="/assets/helper.svg" alt="">
+        </div>
+        <div class="summary-service-option last not-available">
+          <input type="checkbox" name="" id="installation">
+          <label class="shrink-text-block" for="installation">Instalación y recogida del equipo</label>
+          <img src="/assets/helper.svg" alt="">
+        </div>
+      </div>
+  
+      <hr class="summary-line">
+  
+      <div class="summary-price-graph">
+        <div>
+          <p class="summary-price-graph-head-text">Dia</p>
+          <hr class="first">
+          <p>Precio x dia</p>
+        </div>
+        <div>
+          <p>1er Dia</p>
+          <hr>
+          <p>99,00€</p>
+        </div>
+        <div>
+          <p>1er Dia</p>
+          <hr>
+          <p>99,00€</p>
+        </div>
+        <div>
+          <p>1er Dia</p>
+          <hr>
+          <p>99,00€</p>
+        </div>
+        <div>
+          <p>1er Dia</p>
+          <hr>
+          <p>99,00€</p>
+        </div>
+        <div>
+          <p>1er Dia</p>
+          <hr>
+          <p>99,00€</p>
+        </div>
+      </div>
+  
+      <div class="summary-price">
+        <h3>Total a pagar <span id="order_price">366.30</span>€</h3>
+        <h4>Total fianza 
+          <div class="summary-price-deposit-container"><span id="order_deposit">400,00€</span><img src="/assets/helper.svg" alt=""></div>
+        </h4>
+        <p>Se efectuará una congelación de fondos en tu cuenta bancaria de <span id="order_deposit_helper">400,00€</span>, el dinero nunca saldrá de tu cuenta.
+         Para saber más:</p>
+         <a href="" class="not-available">Como funciona la fianza?</a>
+      </div>
+  
+      <button class="summary-submit">Tramitar pedido <span id="items_selected_qty">(3)</span></button>
+    </div>
+
+  </section>
+</main>
+
+<script>
+  const priceDiscount = <%= priceDiscount %>;
+  const priceDecay = <%= priceDecay %>;
+  console.log(priceDiscount);
+  console.log(priceDecay);
+</script>
+
+<script>
+  // prevents the date pickers from selecting the same day and a day after the other
+  const pickupDate = document.getElementById('pickup_date');
+  const returnDate = document.getElementById('return_date');
+  const minDays = 1;
+
+  const newDate = (refDate ,minDays) => {
+    const formattedDate = new Date(refDate.value);
+    formattedDate.setDate(formattedDate.getDate() + minDays);
+    const newDate = formattedDate.toISOString().split('T')[0];
+    return newDate
+  }
+
+  function pickupDateLimit() {
+    if (pickupDate.value) {
+      returnDate.min = newDate(pickupDate, minDays); // Show the placeholder text
+    } else {
+      returnDate.min = '';
+    }
+  }
+  pickupDate.addEventListener('input', () => {
+    pickupDateLimit()
+  })
+  
+  function returnDateLimit() {
+    if (returnDate.value) {
+      pickupDate.max = newDate(returnDate, -minDays); // Show the placeholder text
+    } else {
+      pickupDate.max = '';
+    }
+  }
+  returnDate.addEventListener('input', () => {
+    returnDateLimit()
+  })
+
+  // stores and retrieves the current selected dates in local storage
+  pickupDate.addEventListener('change', () => {
+    const key = 'pickupDate';
+    const expirationDays = 7;
+    const data = { date: pickupDate.value}    
+    setLocalStorage(key, data, expirationDays)
+  })
+  returnDate.addEventListener('change', () => {
+    const key = 'returnDate';
+    const expirationDays = 7;
+    const data = { date: returnDate.value}    
+    setLocalStorage(key, data, expirationDays)
+  })
+
+  try {
+    const PDresponse = getLocalStorage('pickupDate');
+    if(PDresponse) { pickupDate.value = PDresponse.date}
+    pickupDateLimit()
+  
+    const RDresponse = getLocalStorage('returnDate');
+    if(RDresponse) { returnDate.value = RDresponse.date}
+    returnDateLimit()
+  } catch (error) {
+    console.log(error)
+  }
+</script>
+
+<script>
+  // makes fancier columns ul's for each product bullet points
+  function distributeListItems() {
+    const cartItems = document.querySelectorAll('.cart-item');
+
+    cartItems.forEach((item) => {
+      const listItems = item.querySelectorAll('.cart-item-bullet-points li');
+
+      const column1 = document.createElement('ul');
+      const column2 = document.createElement('ul');
+      // column2.classList.add('shrink-text-block')
+      // column1.classList.add('shrink-text-block')
+
+      let totalLength1 = 0;
+      let totalLength2 = 0;
+
+      listItems.forEach((point, index) => {
+        const length = point.textContent.length;
+
+        if (totalLength1 <= totalLength2 || index === 0) {
+          totalLength1 += length;
+          column1.appendChild(point.cloneNode(true));
+        } else {
+          totalLength2 += length;
+          column2.appendChild(point.cloneNode(true));
+        }
+      });
+
+      item.querySelector('.cart-item-bullet-points').innerHTML = ''; // Clear existing items
+      item.querySelector('.cart-item-bullet-points').appendChild(column1); // Append column 1
+      item.querySelector('.cart-item-bullet-points').appendChild(column2); // Append column 2
+    });
+  }
+
+  document.addEventListener('DOMContentLoaded', () => {
+    distributeListItems();
+  });
+</script>
+
+<script>
+  // overlay script for the cart items and summary
+  function toggleOverlay(activated) {
+    const toggleOverlay = document.querySelector('.cart-loading-overlay')
+    const summaryOverlay = document.querySelector('.summary-overlay')
+    if(activated == true) {
+      toggleOverlay.style.opacity = '1';
+      toggleOverlay.style.pointerEvents  = 'auto';
+      summaryOverlay.style.pointerEvents  = 'auto';
+    } else {
+      toggleOverlay.style.opacity = '0';
+      toggleOverlay.style.pointerEvents = 'none';
+      summaryOverlay.style.pointerEvents  = 'none';
+    }
+  }
+</script>
+
+<script>
+  // code for checkboxes and date prices changes
+
+  // sets the checkbox.checked property to the localStorage reference
+  function setCheckboxesToLocalStorage() {
+    const checkboxes = document.querySelectorAll(".cart-item input[type = 'checkbox']")
+    
+    checkboxes.forEach(checkbox => {
+      const productId = checkbox.closest('.cart-item').getAttribute('id')
+      const key = 'isChecked' + productId;
+      const response = getLocalStorage(key);
+      try {
+        checkbox.checked = response.checked === true ? true : false;
+      } catch (error) {
+        // console.log(error)
+        checkbox.checked = false;
+      }
+    })
+  }
+  setCheckboxesToLocalStorage();
+
+  function addCheckboxListeners() {
+    const productCheckboxes = document.querySelectorAll(".cart-item input[type='checkbox']")
+    productCheckboxes.forEach(checkbox => {
+      // changes the local storage value for each checkbox
+      checkbox.addEventListener('change', () => {
+        const productId = checkbox.closest('.cart-item').getAttribute('id')
+
+        const key = 'isChecked' + productId;
+        const expirationDays = 1;
+        const response = getLocalStorage(key);
+        
+        if(!response) {
+          const data = { checked: true};
+          setLocalStorage(key, data, expirationDays);
+        } else {
+          checkbox.checked == true ? setLocalStorage(key, {checked: true}, expirationDays) : setLocalStorage(key, {checked: false}, expirationDays)
+        }
+      })
+
+      checkbox.addEventListener('change', updatePrices)
+    })
+  }
+  addCheckboxListeners()
+
+  // grabs all the values of the products displayed an re displays the prices accordingly
+  // its also responsible of grabbing the dates, and replying the price accordingly
+  function updatePrices() {
+    const products = document.querySelectorAll('.cart-item');
+    const selectedQtyElements = document.querySelectorAll('#items_selected_qty');
+    const orderPriceElement = document.getElementById('order_price');
+    const orderDepositElement = document.getElementById('order_deposit');
+    const orderDepositHelperElement = document.getElementById('order_deposit_helper');
+
+    let selectedQty = 0,
+        orderPrice = 0,
+        orderDeposit = 0,
+        daysDifference = 1;
+
+        
+        
+    // Convert the input strings to Date objects
+    const startDate = new Date(pickupDate.value);
+    const endDate = new Date(returnDate.value);
+    // Calculate the difference in milliseconds
+    const timeDifference = endDate - startDate;
+    if(timeDifference) {
+      daysDifference = timeDifference / (1000 * 60 * 60 * 24);
+    }
+    
+    // modifies the passed value according to each day price decay and the overall discount percentage
+    function modifyPrice(pricePerDay) {
+      let returnValue = pricePerDay;
+      let percentage = 100;
+
+      for (let index = 1; index < daysDifference;) {
+        index += 1;
+        if(index < 7){
+          percentage -= priceDecay;
+        }
+        returnValue += pricePerDay * (percentage/100)
+        // console.log('day: ' + (index + 1))
+        // console.log('discount: ' + (percentage/100))
+        // console.log('price a day: ' + (pricePerDay * (percentage/100)))
+        // console.log(percentage)
+        // console.log((percentage/100))
+        // console.log(returnValue * (percentage/100))
+      }
+
+      const price = parseFloat(returnValue);
+      const formattedPrice = price.toFixed(2);
+      return formattedPrice.replace('.', ',');
+      
+      returnValue = formattedPrice;
+      return returnValue
+    }
+
+    products.forEach((product, index) => {
+      const productId = product.getAttribute('id');
+      const checkbox = product.querySelector("input[type='checkbox']");
+      const productQty = product.querySelector("#product_qty");
+      const productPrice = product.querySelector("#product_price");
+      const productPriceAlldays = product.querySelector('#product_price_alldays');
+      const productRentDays = product.querySelector('#product_rent_days');
+
+      if(checkbox.checked) {
+        selectedQty += 1;
+        orderPrice += (productPrice.innerText * productQty.innerText);
+      }
+
+      if(!(pickupDate.value && returnDate.value)) {
+        productPriceAlldays.innerText = productPrice.innerText * productQty.innerText;
+        productRentDays.innerText = `1 día`;
+      } else {
+        productPriceAlldays.innerHTML = modifyPrice((productPrice.innerText * productQty.innerText));
+        productRentDays.innerText = daysDifference == 1 ? `${daysDifference} día` : `${daysDifference} días`;
+      }
+    })
+
+    orderPriceElement.innerText = modifyPrice(orderPrice);
+    selectedQtyElements.forEach(element => {
+      element.innerText = `(${selectedQty})`;
+    })
+  }
+  updatePrices();
+</script>
+
+<script>
+  // script for adding and removing products, as well as updating the cart list
+  let ongoingRequest = false;
+
+  function addButtonsListeners() {
+    const removeBtns = document.querySelectorAll('#remove');
+    removeBtns.forEach(btn => {
+      btn.addEventListener('click', event => {
+        requestAndUpdateCart('remove', btn);
+      });
+    });
+
+    const addBtns = document.querySelectorAll('#add');
+    addBtns.forEach(btn => {
+      btn.addEventListener('click', event => {
+        requestAndUpdateCart('add', btn);
+      });
+    });
+
+    const deleteBtns = document.querySelectorAll('#delete');
+    deleteBtns.forEach(btn => {
+      btn.addEventListener('click', event => {
+        requestAndUpdateCart('delete', btn);
+      });
+    });
+  }
+ addButtonsListeners();
+
+  async function requestAndUpdateCart(operation, btn, dateOnly = false) {
+    try {
+      if (ongoingRequest) {
+        throw new Error('There is an ongoing request already!');
+      }
+
+      toggleOverlay(true);
+      ongoingRequest = true;
+      	
+      let itemId;
+      if(dateOnly === false) {
+        const item = btn.closest('.cart-item')
+        itemId = item.getAttribute('id')
+      }
+
+      if(operation == 'delete') { 
+        const item = btn.closest('.cart-item')
+        const productId =  'isChecked' + item.getAttribute('id');
+        console.log(productId)
+        localStorage.removeItem(productId); 
+      }
+
+      const response = await fetch(`/cart/${itemId}`, {
+        method: 'POST',
+        headers: {
+          'Content-Type': 'application/json'
+        },
+        body: JSON.stringify({
+          operation: operation,
+          requestFromCartPage: true,
+          dateOnly,
+          pickupDate: pickupDate.value,
+          returnDate: returnDate.value
+        })
+      });
+      ongoingRequest = false;
+      
+      if (!response.ok) {
+        throw new Error('Network response was not ok.');
+      }
+      
+      const responseData = await response.json();
+      console.log(responseData)
+
+      updateCart(responseData.cart)
+    } catch (error) {
+      console.error('Error:', error.message);
+      toggleOverlay(false)
+      // Handle errors here
+    }
+  }
+  requestAndUpdateCart(undefined, undefined, true);
+
+  function updateCart(cartObject) {
+    try {
+      
+      let items = '';
+      cartObject.list.forEach(({product, qty, currentStock})=> {
+        
+        const newItem = document.createElement('div');
+        newItem.classList = "cart-item";
+        newItem.id = product._id;
+        let bulletPointsContent = '';
+        for (let bulletPoint of product.bulletPoints) {
+          bulletPointsContent += `<li>${bulletPoint}</li>`;
+        }
+  
+        newItem.innerHTML = `
+          <input type="checkbox">
+          <img class="cart-item-image" src="/file/${product.images[0].filename}" alt="">
+          <div class="cart-item-info-container">
+            <div class="cart-item-middle-container">
+              <h3 class="cart-item-name"><b>${product.manufacturer[0]}</b> ${product.name}</h3>
+              <p class="cart-item-price-day"><span id="product_price">${product.priceDay}</span>€ día</p>
+              <ul class="cart-item-bullet-points">
+                ${bulletPointsContent}
+              </ul>
+            </div>
+            <div class="cart-item-end-container">
+              <div class="cart-item-price">
+                <h3><span id="product_price_alldays">148</span>€ <p id="product_rent_days">4 días</p></h3>
+                <img src="/assets/bin.svg" id="delete" alt="">
+              </div>
+              <div class="cart-item-quantity-selector">
+                <button id="remove"><img src="/assets/mathSubtract.svg" alt=""></button>
+                <span id="product_qty">${qty}</span>
+                <button id="add"><img src="/assets/mathAdd.svg" alt=""></button>
+              </div>
+              <p class="cart-item-stock">en stock: ${currentStock}</p>
+            </div>
+          </div>
+        `;
+  
+        items += newItem.outerHTML + '<hr class="cart-item-list-line">';
+      })
+  
+      const cartItemList = document.querySelector('.cart-item-list');
+      cartItemList.innerHTML = items;
+  
+      addButtonsListeners();
+      distributeListItems();
+      resizeText();
+      setCheckboxesToLocalStorage();
+      addCheckboxListeners();
+      updatePrices();
+      toggleOverlay(false)
+    } catch (error) {
+      console.error(error)
+    }
+  }
+</script>
+
+<script>
+  // date related functions
+  pickupDate.addEventListener('change', () => {requestAndUpdateCart(undefined, undefined, true)})
+  returnDate.addEventListener('change', () => {requestAndUpdateCart(undefined, undefined, true)})
+  
+</script>
+
+<script>
+  // removes the minutes from the time selectors
+  const inputs = document.querySelectorAll("#pickup_time, #return_time")
+  inputs.forEach(input => {
+    input.addEventListener("change", function(evt) {
+    const match = this.value.match(/^(\d{2})/);
+    if (match) this.value = match[1] + ":00";
+  });
+  });
+</script>
+
+<script>
+  // resizes text blocks
+  function resizeText() {
+    let d = document.querySelectorAll('.shrink-text-block'),
+      i, w, width, height;
+
+    for (i = 0; i < d.length; i++) {
+      width = d[i].offsetWidth;
+      height = d[i].offsetHeight;
+
+      for (w = width; w; w--) {
+        d[i].style.width = w + 'px';
+        if (d[i].offsetHeight !== height) break;
+      }
+
+      if (w < d[i].scrollWidth) {
+        d[i].style.width = d[i].style.maxWidth = d[i].scrollWidth + 'px';
+      } else {
+        d[i].style.width = (w + 1) + 'px';
+      }
+    }
+  }
+
+  // Check for wf-loading class presence at intervals
+  const intervalId = setInterval(() => {
+    const htmlTag = document.querySelector('html');
+
+    if (!htmlTag.classList.contains('wf-loading')) {
+      // Execute the code when wf-loading class is not present
+      resizeText();
+      document.querySelector(".summary-services-container").style.visibility = "visible";
+      clearInterval(intervalId); // Stop checking once condition is met
+    }
+  }, 1);
+</script>
+
+<script>
+  const submitOrderBtn = document.querySelector('.summary-submit');
+  
+  submitOrderBtn.addEventListener('click', event => {
+    submitOrder();
+  });
+
+  async function submitOrder() {
+    try {
+      if(!(pickupDate.value && returnDate.value) ) { throw new Error('pickup or return date not selected') }
+      if(ongoingRequest) { throw new Error('Request already in progress') }
+
+      const allProducts = document.querySelectorAll('.cart-item');
+      let selectedProducts = [];
+
+      allProducts.forEach(product => {
+        const checkbox = product.querySelector("input[type='checkbox']");
+        if (checkbox.checked === true) {
+          selectedProducts.push({ productId: product.getAttribute('id') });
+        }
+      })
+
+      // console.log(selectedProducts);
+      
+      toggleOverlay(true);
+      ongoingRequest = true;
+      
+      const response = await fetch(`/account/orders`, {
+        method: 'POST',
+        headers: {
+          'Content-Type': 'application/json'
+        },
+        body: JSON.stringify({
+          pickupDate: pickupDate.value,
+          returnDate: returnDate.value,
+          selectedProducts
+        })
+      })
+      .catch(e => {
+        throw new Error(e);
+      })
+
+      const responseData = await response.json();
+      console.log(responseData);
+
+      toggleOverlay(false);
+      ongoingRequest = false;
+      
+    } catch (error) {
+      console.error(error)
+    }
+  }
+
+</script>

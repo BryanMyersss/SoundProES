@@ -1,0 +1,39 @@
+/* @import url('https://fonts.googleapis.com/css2?family=Inter:wght@100;200;300;400;500;600;700;800;900&display=swap');
+@import url('https://fonts.googleapis.com/css2?family=Outfit:wght@100;200;300;400;500;600;700;800;900&display=swap'); */
+
+
+:root {
+  --font-outfit: 'Outfit', sans-serif;
+  --font-inter: 'Inter', sans-serif;
+  --background-shadow: 0px 0px 4px 0px rgba(0, 0, 0, 0.10);
+  --main-font-color: #232323;
+  --secondary-font-color: #313131;
+  --success-color: #05C201;
+  --error-color: #FF3434;
+  --click-blue: #007EF2;
+  --brand-color: #EF476F;
+}
+
+.wf-loading {
+  display: none;
+}
+
+* {
+  color: var(--main-font-color);
+  box-sizing: border-box;
+  padding: 0;
+  margin: 0;
+  scroll-behavior: smooth;
+}
+
+body {
+  background: #F5F5F5;
+}
+
+img {
+  object-fit: contain;
+}
+
+.section_padding {
+  padding: 0rem 149px;
+}

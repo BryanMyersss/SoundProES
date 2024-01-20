@@ -1,0 +1,67 @@
+<% layout('layouts/boilerplate') %>
+<%- include('../navbar/navbar') %>
+
+<link rel="stylesheet" href="/stylesheets/loginRegister.css">
+<div class="input-container">
+  <div class="input-form">
+    <h1>Iniciar sesión</h1>
+    <form id="login_form" action="/login" method="POST" novalidate>
+      <div class="input-spacing">
+        <input type="text" name="username" id="username_input" placeholder="Nombre de usuario o correo">
+        <div class="unvalid-feedback">Usuario inválido</div>
+      </div>      
+      <div class="input-spacing special-placeholder-container">
+        <input type="password" name="password" id="password_input">
+        <span id="password_placeholder" class="password-placeholder">Repita la contraseña</span>
+        <div class="unvalid-feedback">Las contraseñas no coinciden</div>
+      </div>
+      <button class="submit-button" type="button" id="submit_button" aria-label="Iniciar sesión">
+        Iniciar sesión
+      </button>
+    </form>
+    <span class="account-status">No te has registrado? <a href="/register">Registrarse</a></span>
+  </div>
+</div>
+
+<script> 
+  document.addEventListener("DOMContentLoaded", function() {
+      // Focus on the input field with ID 'myInput'
+      document.querySelector(".input-form input").focus()
+    });
+  
+  document.getElementById('username_input').addEventListener('keyup', function(event) {
+    if (event.key === 'Enter') {
+      event.preventDefault();
+      document.getElementById('password_input').focus();
+    }
+  });
+
+  document.getElementById('password_input').addEventListener('keyup', function(event) {
+    if (event.key === 'Enter') {
+      // Allow the default form submission behavior when "Enter" is pressed in the password field
+      // This code executes the form submission
+      document.getElementById('login_form').submit();
+    }
+  });
+
+  document.getElementById('submit_button').addEventListener('click', function() {
+    document.getElementById('login_form').submit();
+  });
+</script>
+
+<script>  
+  const passwordPlaceholder = document.getElementById('password_placeholder');
+  const passwordInput = document.getElementById('password_input');
+
+  passwordInput.addEventListener('focus', () => {
+    if (passwordInput.value === '') {
+      passwordPlaceholder.style.display = 'none'; // Hide the placeholder text
+    }
+  });
+
+  passwordInput.addEventListener('blur', () => {
+    if (passwordInput.value === '') {
+      passwordPlaceholder.style.display = ''; // Show the placeholder text
+    }
+  })
+</script>

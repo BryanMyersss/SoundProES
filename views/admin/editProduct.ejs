@@ -1,0 +1,186 @@
+<% layout('layouts/boilerplate') %>
+<%- include('./navbar/adminNav') %>
+
+<link rel="stylesheet" href="/stylesheets/admin/addProduct.css">
+<main class="main-container edit-page">
+  <section class="add-product-main-container">
+    <div class="preview-main-container">
+      <link rel="stylesheet" href="/stylesheets/shop/shop.css">
+      <div class="product-card">  
+        <img class="product-main-image" src="/file/<%= product.images[0].filename %>" 
+        alt="<%= product.manufacturer[0]%> <%= product.name %>"
+        >
+        <div class="product-vertical-line"></div>
+        <div class="product-container">
+          <b class="product-manufacturer"><%= product.manufacturer[0] %></b>&nbsp;
+          <h2 class="product-name"><%= product.name %></h2>
+          <ul class="product-bulletpoints">
+            <% for( let bulletPoint of product.bulletPoints ) { %>
+              <li><%= bulletPoint %></li>
+            <% } %>
+          </ul>
+          <div class="product-pricing-container">
+            <div class="product-price-stock-container">
+              <h3 class="product-price"><%= product.priceDay %>€ día</h3>
+              <% 
+              let stockValue;
+                if(product.stock.totalOwned){ 
+                  stockValue = product.stock.totalOwned;
+                } else {
+                  stockValue = "-1";
+                }
+               %>
+              <h4 class="product-stock">en stock: <%= stockValue %></h4>
+            </div>
+            <button class="product-button" id="productId_<%=product._id%>">
+              <div id="checklist">
+                <input type="checkbox">
+                <label></label>
+              </div>
+              <div class="product-button-loader"></div>
+              <img src="/assets/addBasket.png" alt="Añadir al carrito">
+            </button>
+          </div>
+        </div>
+      </div>
+    </div>
+
+    <form action="/admin/product/<%= product._id %>?_method=PATCH" method="POST" class="input-form">
+      <h1>Editar producto</h1>
+      <div class="input-spacing">
+        <input type="text" name="manufacturer" value="<%= product.manufacturer[0] %>" id="input_manufacturer" placeholder="Marca, Segunda marca... (si hay)">
+        <div class="unvalid-feedback">Marca inválida</div>
+      </div>
+      <div class="input-spacing">
+        <input type="text" name="name" value="<%= product.name %>" id="input_text" placeholder="Nombre del producto">
+      </div>
+      <div class="input-spacing input-category-container">
+        <input type="text" name="category" id="input_category" value="<%= product.category %>" placeholder="Categoría" readonly>
+        <div class="input-category-list">
+          <% categories.forEach(category => { %>
+            <p><%= category %></p>
+          <% }) %>
+        </div>
+      </div>
+      <% 
+      const textArea = product.bulletPoints.join('\n');
+      %>
+      <div class="input-spacing">
+        <textarea class="input-bullet-points" name="bulletpoints" id="input_textarea" cols="30" rows="4" placeholder="Bullet points"><%= textArea %></textarea>
+      </div>
+      <div class="input-spacing stock-price-container">
+        <input type="text" name="priceday" id="input_priceday" value="<%= product.priceDay %>" placeholder="Precio">
+        <input type="text" name="stock" id="input_stock" value="<%= product.stock.totalOwned %>" placeholder="Stock">
+      </div>
+      <button class="submit-button" type="submit">
+        Editar producto
+      </button>
+    </form>
+  </section>
+</main>
+
+<script>
+  // Script for the category selector
+  const categoryList = document.querySelector('.input-category-list');
+  const categoryInput = document.querySelector('#input_category');
+
+  categoryInput.addEventListener('click', (event => {
+    categoryList.style.display = 'flex';
+    event.stopPropagation();
+  }))
+
+  document.addEventListener('click', (event => {
+    if (!categoryList.contains(event.target)) {
+      categoryList.style.display = 'none'; 
+    }
+  }));
+
+  const category = document.querySelectorAll('.input-category-list p');
+  category.forEach((p) => {
+    p.addEventListener('click', () => {
+      categoryInput.value = p.textContent;
+    })
+  })
+
+</script>
+
+<script>
+  // This scripts connect the form to the preview
+    /**
+   * Connects text display to an input field.
+   * This function associates a text display element with an input field for synchronization.
+   * @param {string} textSelector The text selector which will copy the input text. Any css selector works
+   * @param {string} inputSelector The input selector which the text element will copy. Any css selector works
+   * @param {string} beforeString String to add before the text
+   * @param {string} afterString String to add after the text 
+   */
+  function connectTextToInput(textSelector, inputSelector, beforeString = "", afterString = "") {
+    const text = document.querySelector(textSelector);
+    const input = document.querySelector(inputSelector);
+
+    input.addEventListener('input',(event => {
+      event.preventDefault();
+      text.textContent = beforeString + input.value + afterString;
+    }));
+  }
+
+  connectTextToInput(".product-manufacturer", "#input_manufacturer");
+  connectTextToInput(".product-name", "#input_text");
+  connectTextToInput(".product-price", "#input_priceday", undefined, "€ día");
+  connectTextToInput(".product-stock", "#input_stock", "en stock: ", undefined);
+  
+
+  // script for text area preview
+  const textarea = document.querySelector('#input_textarea');
+  const displayList = document.querySelector('.product-bulletpoints');
+  
+  textarea.addEventListener('input', () => {
+    const lines = textarea.value.split('\n').map(line => line.trim());
+    
+    // Clear existing list items
+    displayList.innerHTML = '';
+    
+    // Rebuild the list with updated lines from textarea
+    lines.forEach(line => {
+      if (line !== '') {
+        const newListItem = document.createElement('li');
+        newListItem.textContent = line;
+        displayList.appendChild(newListItem);
+      }
+    });
+  });
+
+  // // preview script for the image 
+  // const inputImage = document.querySelector('#input_image');
+  // const previewImage = document.querySelector('.product-main-image');
+
+  // // Check if image data is stored in localStorage
+  // const storedImageData = localStorage.getItem('selectedImageEdit');
+
+  // if (storedImageData) {
+  //   previewImage.src = storedImageData; // Set the image source from localStorage
+  //   previewImage.style.display = 'block'; // Show the image
+  // }
+
+  // inputImage.addEventListener('change', function(event) {
+  //   const file = event.target.files[0]; // Get the selected file
+
+  //   if (file) {
+  //     const reader = new FileReader();
+
+  //     reader.onload = function(e) {
+  //       const imageData = e.target.result; // Get the image data
+
+  //       localStorage.setItem('selectedImageEdit', imageData); // Store image data in localStorage
+  //       previewImage.src = imageData; // Set the image source to the FileReader result
+  //       previewImage.style.display = 'block'; // Show the image
+  //     };
+
+  //     reader.readAsDataURL(file); // Read the file as a data URL
+  //   } else {
+  //     localStorage.removeItem('selectedImageEdit'); // Remove image data from localStorage if no file selected
+  //     previewImage.src = '#'; // Reset image source if no file selected
+  //     previewImage.style.display = 'none'; // Hide the image
+  //   }
+  // });
+</script>

@@ -1,0 +1,50 @@
+<% 
+function formatPrice(price) {
+  price = parseFloat(price);
+
+  if (isNaN(price)) {
+    return "Invalid Price";
+  }
+
+  const formattedPrice = price.toFixed(2);
+
+  return formattedPrice.replace('.', ',');
+}
+%>
+
+<% for(let order of formattedOrders) { %>
+  <div class="order">
+    <div class="order-header">
+      <span class="order-status">Listo para recoger</span>
+      <div>
+        <p>Pedido efectuado el: <%= order.orderDate %></p>
+        <p>Numero de pedido: <%= order._id %> <span class="order-copy">Copiar</span></p>
+      </div>
+    </div>
+    <hr>
+    <div class="order-content">
+      <% order.products.forEach(({product : {images}}, index)  => { %>
+        <% if(index <= 2) { %>
+          <img src="/file/<%= images[0].filename %>" alt="">
+        <% } %>
+      <% }); %>     
+
+      <% if(order.products.length > 3) { %>
+        <span class="order-content-remaining-products"><%= (order.products.length - 3) %>+</span>
+      <% } %>
+       
+      <div class="order-content-dates">
+        <p>Recoger el: <%= order.pickupDateES %></p>
+        <p>Entregar el: <%= order.returnDateES %></p>
+      </div>
+    </div>
+    <div class="order-end">
+      <button class="not-available">Expandir</button>
+      <div class="order-price">
+        <p>Precio: <%= formatPrice(order.price.total) %>€</p>
+        <p>Fianza: <%= formatPrice(order.price.deposit) %>€</p>
+      </div>
+    </div>
+  </div>
+<% } %>
+

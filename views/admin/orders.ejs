@@ -1,0 +1,57 @@
+<% layout('layouts/boilerplate') %>
+<%- include('./navbar/adminNav') %>
+
+<link rel="stylesheet" href="/stylesheets/admin/adminSecNav.css">
+<nav class="secondary_navbar admin section_padding">
+  <div class="secondary_navbar-container">
+    <p class="navbar-action-button" id="action_delete">Eliminar producto</p>
+    <p class="navbar-action-button" id="action_edit">Editar producto</p>
+    <p><a href="/admin/product/add">Añadir producto</a></p>    
+  </div>
+</nav>
+
+<link rel="stylesheet" href="/stylesheets/admin/orders.css">
+<main class="main-container">
+  <div class="orders-container">
+    <% for(let order of orders) { %>
+      <div class="order">
+        <div class="order-info">
+          <p><span>Nombre: </span><%= order.user.username %></p>
+          <p><span>DNI: </span><%= order.user.dni %></p>
+        </div>
+        <div class="order-info">
+          <p><span>Delivery: </span><%= order.delivery.state %></p>
+          <p><span>Punto entrega: </span>9 Carrer de la Reina Esclaramunda, Palma, Islas Baleares</p>
+        </div>
+        <div class="order-info column">
+          <p><span>Entrega: </span><%= order.pickup.date.toISOString().split('T')[0]; %> 16:00</p>
+          <p><span>Retorno: </span><%= order.return.date.toISOString().split('T')[0]; %> 14:00</p>
+        </div>
+        <div class="order-info">
+          <p><span>Finalizado: </span><%= order.finished %></p>
+
+        </div>
+        <div class="order-products-container">
+          <% let excess = 0; %>
+          <% order.products.forEach((item, index) => { %>
+            <% if (index < 8) { %>
+              <div class="order-product">
+                <img class="order-product-image" src="/file/<%= item.product.images[0].filename %>" alt="">
+                <span class="order-product-qty"><%= item.qty %></span>
+              </div>
+            <% } else { %>
+              <% excess += 1 } %>
+          <% }) %>
+        </div>
+        <p class="order-extra-products">
+          <% if (excess > 0) { %>
+            Y <%= excess %> productos más...
+          <% } %>
+        </p>
+        <div class="order-buttons-container">
+          <a class="order-product-button" href="/admin/orders/<%= order._id %>">Finalizar Pedido</a>
+        </div>
+      </div>
+    <% } %>
+  </div>
+</main>

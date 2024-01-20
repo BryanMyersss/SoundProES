@@ -1,0 +1,437 @@
+<% layout('layouts/boilerplate') %>
+<%- include('../navbar/navbar') %>
+<%- include('../navbar/secondaryNavbar') %>
+
+<link rel="stylesheet" href="/stylesheets/shop/shop.css">
+<main class="main-shop-container section_padding">
+
+  <div class="main-overlay">
+    <div class="overlay-loader"></div>
+  </div>
+  
+  <aside class="side-navbar">
+
+    <div class="option pickup-date">
+      <label for="pickup_date">Fecha de recogida</label>
+        <div class="pickup-date-container">
+          <input type="date" class="input-spacing" id="pickup_date">
+          <span>Ver disponibilidad</span>
+          <img src="/assets/calendarAdd.svg" alt="">
+        </div>
+    </div>
+
+    <div class="option return-date">
+      <label for="return_date">Fecha de devolución</label>
+        <div class="return-date-container">
+          <input type="date" class="input-spacing" id="return_date">
+          <span>Ver disponibilidad</span>
+          <img src="/assets/calendarAdd.svg" alt="">
+        </div>
+    </div>
+
+    <div class="option price-range">
+      <label for="min_price">Precio</label>
+      <div class="input-spacing container">
+        <div class="input-container not-available">
+          <input type="number" placeholder="0" id="min_price">
+          <span class="euro">€</span>
+        </div>
+        <hr>
+        <div class="input-container not-available">
+          <input type="number" placeholder="0" id="max_price"></input>
+          <span class="euro">€</span>
+        </div>
+      </div>
+    </div>
+
+    <div class="option category-filter">
+      <label>Categoria</label>
+      <ul>
+        <li>
+          <input type="checkbox" id="filter-speaker" name="filter-speaker">
+          <label for="filter-speaker">Altavoces</label>
+        </li>
+        <li>
+          <input type="checkbox" id="filter-subwoofer" name="filter-subwoofer">
+          <label for="filter-subwoofer">Subwoofers</label>
+        </li>
+        <li>
+          <input type="checkbox" id="filter-mixer" name="filter-mixer">
+          <label for="filter-mixer">Mixers</label>
+        </li>
+        <li>
+          <input type="checkbox" id="filter-microphone" name="filter-microphone">
+          <label for="filter-microphone">Micrófonos</label>
+        </li>
+        <li>
+          <input type="checkbox" id="filter-lighting" name="filter-lighting">
+          <label for="filter-lighting">Iluminación</label>
+        </li>
+        <li>
+          <input type="checkbox" id="filter-audioAmp" name="filter-audioAmp">
+          <label for="filter-audioAmp">Etapas</label>
+        </li>
+      </ul>
+    </div>
+
+    <div class="option product-comparator">
+      <div class="product-comparator-name-container">
+        <label>Comparador</label>
+        <img src="/assets/helper.svg" class="product-comparator-helper" alt="More about">
+      </div>
+      <div class="product-comparator-container">
+        <div class="product-comparator-slot-container">
+          <div class="product-comparator-slot">
+            <button>
+              <img src="/assets/comparisonAdd.svg" class="add-vector" alt="">
+            </button>
+            <p>Thump Go</p>
+          </div>
+          <span class="product-comparator-vs">vs</span>
+          <div class="product-comparator-slot">
+            <button>
+              <img src="/assets/comparisonAdd.svg" class="add-vector" alt="">
+            </button>
+            <p>Thump Go</p>
+          </div>
+        </div>
+        <button class="product-comparator-expand">
+          <img src="/assets/expandArrow.svg" alt="Expandir comparador">
+        </button>
+      </div>
+    </div>
+  </aside>
+  <!-- end of side navbar -->
+
+  <section class="products-list" id="products-list">
+    <% for( let product of products) { %>
+      <div class="product-card">  
+        <img class="product-main-image" src="/file/<%= product.images[0].filename %>" 
+        alt="<%= product.manufacturer[0]%> <%= product.name %>"
+        >
+        <div class="product-vertical-line"></div>
+        <div class="product-container">
+          <b class="product-manufacturer"><%= product.manufacturer[0] %></b>&nbsp;
+          <h2 class="product-name"><%= product.name %></h2>
+          <ul class="product-bulletpoints">
+            <% for( let bulletPoint of product.bulletPoints ) { %>
+              <li><%= bulletPoint %></li>
+            <% } %>
+          </ul>
+          <div class="product-pricing-container">
+            <div class="product-price-stock-container">
+              <h3 class="product-price"><%= product.priceDay %>€ día</h3>
+              <% 
+              let stockValue;
+                if(product.stock.totalOwned){ 
+                  stockValue = product.stock.totalOwned;
+                } else {
+                  stockValue = "-1";
+                }
+               %>
+              <h4 class="product-stock">en stock: <%= stockValue %></h4>
+            </div>
+            <button class="product-button" id="productId_<%=product._id%>">
+              <div id="checklist">
+                <input type="checkbox">
+                <label></label>
+              </div>
+              <div class="product-button-loader"></div>
+              <img src="/assets/addBasket.png" alt="Añadir al carrito">
+            </button>
+          </div>
+        </div>
+      </div>
+    <% } %>
+    <div class="products-end"></div>
+  </section>
+</main>
+
+<script>
+  // overlay script for fetchrequest
+  const overlay = document.querySelector('.main-overlay')
+  function toggleOverlay(active) {
+    if(active == true) {
+      overlay.style.opacity = '1';
+      overlay.style.pointerEvents = 'auto';
+    } else {
+      overlay.style.opacity = '0';
+      overlay.style.pointerEvents = 'none';
+    }
+  }
+</script>
+
+<script>
+  // script that sends a request to add a product when pressed, also manages the animations.
+  function addButtonsListeners(){
+    const buttons = document.querySelectorAll('.product-button');
+
+    function delay(ms) {
+      return new Promise(resolve => {
+        setTimeout(resolve, ms);
+      });
+    }
+
+    buttons.forEach(button => {
+      let timer;
+      let requesting = false;
+      button.addEventListener('click', async () => {
+        try {
+          if (requesting){
+            console.log('already requesting')
+            return;
+          }
+          clearTimeout(timer);
+          const productId = button.id.split('_')[1]; // Extracting the product ID from the button's ID
+          const clickedButton = event.currentTarget; // Get the clicked button
+          const basketImg = clickedButton.querySelector('img');
+          const loader = clickedButton.querySelector('.product-button-loader');
+          const checkbox = clickedButton.querySelector('input[type="checkbox"]');
+          checkbox.checked = false;
+          basketImg.style.opacity = 0;
+          loader.style.visibility = 'visible'
+          loader.style.opacity = 1;
+          
+          requesting = true;
+          const response = await fetch(`/cart/${productId}`, {
+            method: 'POST',
+            headers: {
+              'Content-Type': 'application/json'
+            },
+            body: JSON.stringify({
+              operation: 'add'
+            })
+          }).catch(error => {
+            console.log(error)
+          })
+
+          requesting = false;
+
+          if (response.redirected) {
+            const htmlResponse = await response.text(); // Extract HTML content from the response
+            document.open(); // Clear the current document
+            document.write(htmlResponse); // Write the new HTML content
+            document.close();
+          }
+
+          loader.style.opacity = 0;
+          if (response.ok) {
+            const responseData = await response.json();
+            console.log(responseData);
+            loader.style.visibility = 'hidden';
+            checkbox.checked = true;
+          }
+          else {
+            console.log(`Unexpected response status for product ${productId}:`, response.status);
+            const errorMessage = await response.text(); // Get the error message from the response
+            console.log('Server error message:', errorMessage);
+          }          
+
+          timer = setTimeout(() => {
+            // console.log('Timer expired');
+              checkbox.checked = false;
+              basketImg.style.opacity = 1;
+          }, 1000);
+        } catch (error) {
+          requesting = false;
+          console.error('Error:', error);
+        }
+      });
+    });
+  }
+
+  addButtonsListeners();
+</script>
+
+<script>
+  // datepickers scripts
+
+  // prevents the date pickers from selecting the same day and a day after the other
+  const pickupDate = document.getElementById('pickup_date');
+  const returnDate = document.getElementById('return_date');
+  const minDays = 1;
+
+  const newDate = (refDate ,minDays) => {
+    const formatedDate = new Date(refDate.value);
+    formatedDate.setDate(formatedDate.getDate() + minDays);
+    const newDate = formatedDate.toISOString().split('T')[0];
+    return newDate
+  }
+
+  function pickupDateLimit() {
+    if (pickupDate.value) {
+      returnDate.min = newDate(pickupDate, minDays); // Show the placeholder text
+    } else {
+      returnDate.min = '';
+    }
+  }
+  pickupDate.addEventListener('input', () => {
+    pickupDateLimit()
+  })
+  
+  function returnDateLimit() {
+    if (returnDate.value) {
+      pickupDate.max = newDate(returnDate, -minDays); // Show the placeholder text
+    } else {
+      pickupDate.max = '';
+    }
+  }
+  returnDate.addEventListener('input', () => {
+    returnDateLimit()
+  })
+
+  // stores and retrieves the current selected dates in local storage
+  pickupDate.addEventListener('change', () => {
+    const key = 'pickupDate';
+    const expirationDays = 7;
+    const data = { date: pickupDate.value}    
+    setLocalStorage(key, data, expirationDays)
+  })
+  returnDate.addEventListener('change', () => {
+    const key = 'returnDate';
+    const expirationDays = 7;
+    const data = { date: returnDate.value}    
+    setLocalStorage(key, data, expirationDays)
+  })
+
+  try {
+    const PDresponse = getLocalStorage('pickupDate');
+    if(PDresponse) { pickupDate.value = PDresponse.date}
+    pickupDateLimit()
+  
+    const RDresponse = getLocalStorage('returnDate');
+    if(RDresponse) { returnDate.value = RDresponse.date}
+    returnDateLimit()
+  } catch (error) {
+    console.log(error)
+  }
+
+</script>
+
+<script>
+  // convenience js for entering prices with enter
+  document.getElementById('min_price').addEventListener('keyup', function(event) {
+    if (event.key === 'Enter') {
+      event.preventDefault();
+      document.getElementById('max_price').focus();
+    }
+  });
+
+  document.getElementById('max_price').addEventListener('keyup', function(event) {
+    if (event.key === 'Enter') {
+      event.preventDefault();
+      event.target.blur(); // Blur or remove focus from the max_price input
+    }
+  });
+</script>
+
+
+<script>
+function updateUI(products) {
+  const productList = document.getElementById('products-list');
+
+  // Clear the existing content
+  productList.innerHTML = '';
+
+  // Iterate through the filtered products and add them to the list
+  products.forEach((product) => {
+    
+    const productItem = document.createElement('div');
+    productItem.className = 'product-card';
+    
+    let bulletPointsContent = '';
+    for (let bulletPoint of product.bulletPoints) {
+      bulletPointsContent += `<li>${bulletPoint}</li>`;
+    }
+    
+    const buttonClass = product.currentStock > 0 ? 'product-button' : 'product-button-unavailable'
+    // Populate the product item with data
+    productItem.innerHTML = `
+    <img class="product-main-image" src="/file/${product.images[0].filename}" alt="${product.manufacturer[0]," ", product.name}">
+    <div class="product-vertical-line"></div>
+    <div class="product-container">
+      <b class="product-manufacturer">${product.manufacturer[0]}</b>&nbsp;
+      <h2 class="product-name">${product.name}</h2>
+      <ul class="product-bulletpoints">
+        ${bulletPointsContent}
+      </ul>
+      <div class="product-pricing-container">
+        <div class="product-price-stock-container">
+          <h3 class="product-price">${product.priceDay}€ día</h3>
+          <h4 class="product-stock">en stock: ${product.currentStock}</h4>
+        </div>
+        <button class=${buttonClass} id="productId_${product._id}">
+          <div id="checklist">
+            <input type="checkbox">
+            <label></label>
+          </div>
+          <div class="product-button-loader"></div>
+          <img src="/assets/addBasket.png" alt="">
+        </button>
+      </div>
+    </div>
+    `;
+
+    productItem.style.opacity = '0'
+
+    productList.appendChild(productItem);
+
+    let opacity = 0;
+    const fadeInInterval = setInterval(() => {
+      opacity += 0.05; // Change this value to adjust the speed of the fade-in effect
+      productItem.style.opacity = String(opacity);
+      if (opacity >= 1) {
+        clearInterval(fadeInInterval); // Stop increasing opacity when it reaches 1
+      }
+    }, 5); 
+  });
+}
+
+document.getElementById('filter-speaker').addEventListener('click', updateFilters);
+document.getElementById('filter-subwoofer').addEventListener('click', updateFilters);
+document.getElementById('filter-mixer').addEventListener('click', updateFilters);
+document.getElementById('filter-microphone').addEventListener('click', updateFilters);
+document.getElementById('filter-lighting').addEventListener('click', updateFilters);
+document.getElementById('filter-audioAmp').addEventListener('click', updateFilters);
+pickupDate.addEventListener('change', updateFilters);
+returnDate.addEventListener('change', updateFilters);
+// Add event listeners for other filters
+
+
+function updateFilters() {
+    toggleOverlay(true)
+    // Gather selected filter values (e.g., checkboxes, price range, dates)
+    const filters = {
+      speaker: document.getElementById('filter-speaker').checked,
+      subwoofer: document.getElementById('filter-subwoofer').checked,
+      mixer: document.getElementById('filter-mixer').checked,
+      microphone: document.getElementById('filter-microphone').checked,
+      lighting: document.getElementById('filter-lighting').checked,
+      audioAmp: document.getElementById('filter-audioAmp').checked,
+    };
+
+    // Use Fetch API to send filters to your server
+    fetch('/shop/update-filters', {
+      method: 'POST',
+      headers: {
+        'Content-Type': 'application/json',
+      },
+      body: JSON.stringify({
+        filters,
+        pickupDate: pickupDate.value,
+        returnDate: returnDate.value
+      }),
+    })
+      .then((response) => response.json())
+      .then((data) => {
+        updateUI(data);
+        addButtonsListeners();
+        toggleOverlay(false)
+      })
+      .catch((error) => {
+        toggleOverlay(false)
+        console.error('Error updating filters:', error);
+      });
+  }
+  updateFilters();
+</script>
