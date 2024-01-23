@@ -80,7 +80,7 @@ const priceDiscount = process.env.PRICEDISCOUNT || 0;
 const priceDecay = process.env.PRICEDECAY || 8;
 
 app.get('/', (req, res) => {
-  res.redirect('/shop');
+  res.render('placeholder/index');
 });
 
 app.get('/admin/orders', isLoggedIn, isAdmin, catchAsync(async (req, res) => { 
