@@ -21,6 +21,7 @@ const ExpressError = require('./utils/ExpressError');
 const getStock = require('./utils/getStock');
 const getProductFromCart = require('./utils/getProductFromCart');
 const validateDates = require('./utils/validateDates');
+const usrNameToLower = require('./utils/usrNameToLower');
 
 const {isLoggedIn, isAdmin, logout} = require('./middleware/middlewares');
 
@@ -245,10 +246,11 @@ app.post('/account/orders', isLoggedIn, catchAsync(async (req, res) => {
   try {
     const userId = req.user.id;
     const {pickupDate, returnDate, selectedProducts} = req.body;
-    console.log(req.body)
-    validateDates(pickupDate, returnDate);
+    // console.log(req.body)
+    const dateErr = validateDates(pickupDate, returnDate);
+    if (dateErr) { res.status(200).json({flash_err_message: dateErr}); return }
 
-    const maxOrdersPerUser = process.env.MAXORDERSPERUSER || 3;
+    const maxOrdersPerUser = process.env.MAXORDERSPERUSER || 1;
     const userOrders = await Order.find({
       $and: [
         {user: userId},
@@ -256,13 +258,13 @@ app.post('/account/orders', isLoggedIn, catchAsync(async (req, res) => {
       ]
     })
     if (userOrders.length >= maxOrdersPerUser) {
-      res.status(400).json({message: `Only ${maxOrdersPerUser} order/s can be active per user`});
-      throw new Error(`Only ${maxOrdersPerUser} order/s can be active per user`); 
+      res.status(200).json({flash_err_message: `Solo se puede tener ${maxOrdersPerUser} alquiler/es activos`}); return
+      // throw new Error(`Only ${maxOrdersPerUser} order/s can be active per user`); 
     }
 
-    if(!pickupDate || !returnDate || selectedProducts.length < 1) { 
-      res.status(400).json({message: 'Either a date or products are missing'});
-      throw new Error('Either a date or products are missing'); 
+    if(selectedProducts.length < 1) { 
+      res.status(200).json({flash_err_message: 'Seleccione productos'}); return
+      // throw new Error('Either a date or products are missing'); 
     }
     
     let products = [];
@@ -279,11 +281,12 @@ app.post('/account/orders', isLoggedIn, catchAsync(async (req, res) => {
 
       const stock = await getStock.single(productId, pickupDate, returnDate);
       if(stock < productFromCart.qty) {
-        throw new ExpressError(`Stock not enough for product:
-        product Id: ${productId}
-        product name: ${productFromCart.product.name}
-        current stock: ${stock}
-        requested qty: ${productFromCart.qty}`, 400); 
+        res.status(200).json({flash_err_message: `No hay suficiente stock para: ${productFromCart.product.name}`}); return
+        // throw new ExpressError(`Stock not enough for product:
+        // product Id: ${productId}
+        // product name: ${productFromCart.product.name}
+        // current stock: ${stock}
+        // requested qty: ${productFromCart.qty}`, 400); 
       }
 
       products.push({
@@ -294,15 +297,15 @@ app.post('/account/orders', isLoggedIn, catchAsync(async (req, res) => {
 
       allProductsPriceSum += (productFromCart.product.priceDay * productFromCart.qty);
 
-      console.log('product from cart:')
-      console.log(productFromCart);
+      // console.log('product from cart:')
+      // console.log(productFromCart);
     }
 
-    console.log('Products array:')
-    console.log(products)
+    // console.log('Products array:')
+    // console.log(products)
 
-    console.log('allProductsPriceSum:')
-    console.log(allProductsPriceSum)
+    // console.log('allProductsPriceSum:')
+    // console.log(allProductsPriceSum)
     
     let daysDifference = 1;
     // Convert the input strings to Date objects
@@ -340,10 +343,8 @@ app.post('/account/orders', isLoggedIn, catchAsync(async (req, res) => {
 
     totalOrderPrice = modifyPrice(allProductsPriceSum);
     
-    console.log('totalOrderPrice :')
-    console.log(totalOrderPrice)
-    
-    
+    // console.log('totalOrderPrice :')
+    // console.log(totalOrderPrice)
     
     const order = new Order({
       user: userId,
@@ -374,8 +375,9 @@ app.post('/account/orders', isLoggedIn, catchAsync(async (req, res) => {
     
     setTimeout(() => {
       res.status(200).json({message: 'All went well'});
-    }, 2000)
+    }, 1000)
   } catch (error) {
+    res.status(500).send();
     console.log(error)
   }
 }));
@@ -553,7 +555,7 @@ app.get('/register', (req, res) => {
   res.render('user/register');
 })
 
-app.post('/register', catchAsync(async (req, res) => {
+app.post('/register', usrNameToLower, catchAsync(async (req, res) => {
   try {
     const { username, email, business, phone, birth, dni, password } = req.body;
     const cart = new Cart({list: []});
@@ -575,7 +577,7 @@ app.get('/login', (req, res) => {
   res.render('user/login');
 });
 
-app.post('/login', passport.authenticate('local', {failureFlash: true, failureRedirect: '/login'}), (req, res) => {
+app.post('/login', usrNameToLower, passport.authenticate('local', {failureFlash: true, failureRedirect: '/login'}), (req, res) => {
   req.flash('success', 'Welcome back!');
   res.redirect('/shop');
 });

@@ -601,6 +601,7 @@
 </script>
 
 <script>
+  // Main script for order submitting.
   const submitOrderBtn = document.querySelector('.summary-submit');
   
   submitOrderBtn.addEventListener('click', event => {
@@ -609,8 +610,15 @@
 
   async function submitOrder() {
     try {
-      if(!(pickupDate.value && returnDate.value) ) { throw new Error('pickup or return date not selected') }
-      if(ongoingRequest) { throw new Error('Request already in progress') }
+      if(!(pickupDate.value && returnDate.value) ) { 
+        customFlash(`Fechas no seleccionadas!`, 'none' , 1000);
+        return;
+      }
+
+      if(ongoingRequest) { 
+        customFlash(`Trámite en proceso!`, 'none' , 1000); 
+        return;
+      }
 
       const allProducts = document.querySelectorAll('.cart-item');
       let selectedProducts = [];
@@ -638,17 +646,23 @@
           selectedProducts
         })
       })
-      .catch(e => {
-        throw new Error(e);
-      })
-
-      const responseData = await response.json();
-      console.log(responseData);
-
+      
+      const {flash_err_message} = await response.json();
+      console.log(flash_err_message);
+      if(flash_err_message) {
+        customFlash(flash_err_message, 'error' , 3000);
+        toggleOverlay(false);
+        ongoingRequest = false;
+        return
+      }
+      
+      // Redirect to a specific URL
+      window.location.assign("/account");
+      console.log('should have changed path')
+    } catch (error) {
+      customFlash('Error de servidor', 'error' , 3000);
       toggleOverlay(false);
       ongoingRequest = false;
-      
-    } catch (error) {
       console.error(error)
     }
   }

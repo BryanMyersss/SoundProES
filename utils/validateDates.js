@@ -1,24 +1,30 @@
 module.exports = (pickupDate, returnDate) => {
-  // Convert the input strings to Date objects
-  const startDate = new Date(pickupDate);
-  const endDate = new Date(returnDate);
+    if (!(pickupDate && returnDate)) {
+      return('Fechas no seleccionadas!');
+    }
+    // Convert the input strings to Date objects
+    const startDate = new Date(pickupDate);
+    const endDate = new Date(returnDate);
 
-  // Check if startDate is after endDate
-  if (startDate >= endDate) {
-    throw new Error('Return date must be after pickup date');
-  }
+    // Check if startDate is after endDate
+    if (startDate >= endDate) {
+      return('La fecha de devolución debe ser posterior a la fecha de recogida!');
+    }
 
-  // Calculate the difference in milliseconds
-  const timeDifference = endDate - startDate;
+    // Calculate the difference in milliseconds
+    const timeDifference = endDate - startDate;
 
-  // Calculate the difference in days
-  const daysDifference = timeDifference / (1000 * 60 * 60 * 24);
+    // Calculate the difference in days
+    const daysDifference = timeDifference / (1000 * 60 * 60 * 24);
 
-  // Check if there is at least one day difference
-  if (daysDifference < 1) {
-    throw new Error('There must be at least one day between pickup and return dates');
-  }
+    const maxDays = process.env.MAXRENTALDAYS || 7;
 
-  // Return true if validation passes
-  return true;
-}
+    if (daysDifference > (maxDays - 1)) {
+      return(`Máximo ${maxDays} dias de alquiler!`);
+    }
+    
+    // Check if there is at least one day difference
+    if (daysDifference < 1) {
+      return('Debe haber al menos un día entre las fechas de recogida y devolución!')
+    }
+};

@@ -39,6 +39,8 @@
 }
 
 .selected-setting-container {
+  display: flex;
+  flex-direction: column-reverse;
   max-width: 997px;
   flex: 1;
 }

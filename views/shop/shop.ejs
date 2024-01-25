@@ -208,10 +208,8 @@
           requesting = false;
 
           if (response.redirected) {
-            const htmlResponse = await response.text(); // Extract HTML content from the response
-            document.open(); // Clear the current document
-            document.write(htmlResponse); // Write the new HTML content
-            document.close();
+            window.location.assign("/login");
+            return;
           }
 
           loader.style.opacity = 0;
