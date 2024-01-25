@@ -1,7 +1,7 @@
 If you come from my portfolio:
-I'm currently focusing on the harder stuff, thus everything might seem unorganized, proper validation
-might be missing from some parts, no mobile responsiveness also. To see how this project will be 
-like at the end check my other project YelpCamp.
+As this is such a big project, and for a real client, I'm currently focusing on adding content to the website, thus, validation
+might be missing from some parts, no mobile responsiveness, code is currently unorganized, 
+and secure policies are not set. In the end everything will be were it has to be with rigorous security measures and good practices.
 
 IMPORTANT
 
